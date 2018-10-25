@@ -1,5 +1,7 @@
 // +build ignore
 
+// curl -Lv --proxy http://localhost:8080 --cacert ~/.mitm/ca-cert.pem https://example.org
+
 package main
 
 import (
