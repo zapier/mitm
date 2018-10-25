@@ -8,6 +8,8 @@ It is heavily inspired by the mitmproxy project (https://mitmproxy.org/). Forked
 
 ## Usage
 
+Let's say you have `example.go` like this:
+
 ```go
 package main
 
