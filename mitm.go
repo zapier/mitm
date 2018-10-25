@@ -115,6 +115,7 @@ func (p *Proxy) serveConnect(w http.ResponseWriter, r *http.Request) {
 }
 
 func (p *Proxy) cert(names ...string) (*tls.Certificate, error) {
+	// TODO: could cache these instead of generating on the fly
 	return genCert(p.CA, names)
 }
 

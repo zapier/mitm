@@ -82,15 +82,15 @@ func GenCA(name string) (certPEM, keyPEM []byte, err error) {
 	}
 	key, err := genKeyPair()
 	if err != nil {
-		return
+		return nil, nil, err
 	}
 	certDER, err := x509.CreateCertificate(rand.Reader, tmpl, tmpl, key.Public(), key)
 	if err != nil {
-		return
+		return nil, nil, err
 	}
 	keyDER, err := x509.MarshalECPrivateKey(key)
 	if err != nil {
-		return
+		return nil, nil, err
 	}
 	certPEM = pem.EncodeToMemory(&pem.Block{
 		Type:  "CERTIFICATE",
@@ -100,5 +100,5 @@ func GenCA(name string) (certPEM, keyPEM []byte, err error) {
 		Type:  "ECDSA PRIVATE KEY",
 		Bytes: keyDER,
 	})
-	return
+	return certPEM, keyPEM, nil
 }
