@@ -27,7 +27,8 @@ const (
 	leafUsage = caUsage
 )
 
-func genCert(ca *tls.Certificate, names []string) (*tls.Certificate, error) {
+// generateCertificate generates a certificate for a hostname on the fly.
+func generateCertificate(ca *tls.Certificate, commonNames []string) (*tls.Certificate, error) {
 	now := time.Now().Add(-1 * time.Hour).UTC()
 	if !ca.Leaf.IsCA {
 		return nil, errors.New("CA cert is not a CA")
@@ -39,12 +40,12 @@ func genCert(ca *tls.Certificate, names []string) (*tls.Certificate, error) {
 	}
 	tmpl := &x509.Certificate{
 		SerialNumber:          serialNumber,
-		Subject:               pkix.Name{CommonName: names[0]},
+		Subject:               pkix.Name{CommonName: commonNames[0]},
 		NotBefore:             now,
 		NotAfter:              now.Add(leafMaxAge),
 		KeyUsage:              leafUsage,
 		BasicConstraintsValid: true,
-		DNSNames:              names,
+		DNSNames:              commonNames,
 		SignatureAlgorithm:    x509.ECDSAWithSHA512,
 	}
 	key, err := genKeyPair()
@@ -66,12 +67,12 @@ func genKeyPair() (*ecdsa.PrivateKey, error) {
 	return ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
 }
 
-// GenCA generates a CA, default test behavior.
-func GenCA(name string) (certPEM, keyPEM []byte, err error) {
+// GenerateCertificateAuthority generates a CA for a hostname, generally at proxy boot time.
+func GenerateCertificateAuthority(commonName string) (certPEM []byte, keyPEM []byte, err error) {
 	now := time.Now().UTC()
 	tmpl := &x509.Certificate{
 		SerialNumber:          big.NewInt(1),
-		Subject:               pkix.Name{CommonName: name},
+		Subject:               pkix.Name{CommonName: commonName},
 		NotBefore:             now,
 		NotAfter:              now.Add(caMaxAge),
 		KeyUsage:              caUsage,

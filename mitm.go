@@ -116,7 +116,7 @@ func (p *Proxy) serveConnect(w http.ResponseWriter, r *http.Request) {
 
 func (p *Proxy) cert(names ...string) (*tls.Certificate, error) {
 	// TODO: could cache these instead of generating on the fly
-	return genCert(p.CA, names)
+	return generateCertificate(p.CA, names)
 }
 
 var okHeader = []byte("HTTP/1.1 200 OK\r\n\r\n")
